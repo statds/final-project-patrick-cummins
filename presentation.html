@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3255 Final Presentation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="presentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="presentation_files/libs/quarto-html/quarto.js"></script>
+<script src="presentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="presentation_files/libs/quarto-html/anchor.min.js"></script>
+<link href="presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="presentation_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="presentation_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="presentation_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">3255 Final Presentation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="exoplanet-hunting-with-convolutional-neural-networks" class="level1">
+<h1>Exoplanet Hunting with Convolutional Neural Networks</h1>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>Exoplanet Hunting is the idea of using light data from stars to find planets deep into outer space. This is possible by looking for ‘transits’, or the time in which a planet passes between a star and its observer. The light emitting from the star dims as the planet blocks its path, giving us data that would tell us if a planet is orbiting that star.</p>
+<p>This data was collected through observations made by the NASA Kepler space telescope, specifically <strong>Campaign 3</strong> in 2014. These telescopes measure the light curve of stars deep into space. When these curves ‘dip’, we know that this is a <strong><em>transit</em></strong>, and thus there is likely to be a planet orbiting this star.</p>
+<p>We measure light intensity as ‘flux’. For the purposes of this analysis, we can imagine that a flux is like a minute, or second, or hour: it is a point in time in which we are measuring light data. Our data is structured as such: a .csv file with 5087 rows, representing stars, and 3198 columns, representing the <strong>flux values</strong>. These are the ‘points in time’ mentioned above. Essentially, each column represents a new time in which light intensity was measured. Our data also comes prelabeled, telling us whether there is or is not a planet orbiting the star. This makes this a supervised learning problem, as our data is prelabeled.</p>
+<div class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="133">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>LABEL</th>
+      <th>FLUX.1</th>
+      <th>FLUX.2</th>
+      <th>FLUX.3</th>
+      <th>FLUX.4</th>
+      <th>FLUX.5</th>
+      <th>FLUX.6</th>
+      <th>FLUX.7</th>
+      <th>FLUX.8</th>
+      <th>FLUX.9</th>
+      <th>...</th>
+      <th>FLUX.3188</th>
+      <th>FLUX.3189</th>
+      <th>FLUX.3190</th>
+      <th>FLUX.3191</th>
+      <th>FLUX.3192</th>
+      <th>FLUX.3193</th>
+      <th>FLUX.3194</th>
+      <th>FLUX.3195</th>
+      <th>FLUX.3196</th>
+      <th>FLUX.3197</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>93.85</td>
+      <td>83.81</td>
+      <td>20.10</td>
+      <td>-26.98</td>
+      <td>-39.56</td>
+      <td>-124.71</td>
+      <td>-135.18</td>
+      <td>-96.27</td>
+      <td>-79.89</td>
+      <td>...</td>
+      <td>-78.07</td>
+      <td>-102.15</td>
+      <td>-102.15</td>
+      <td>25.13</td>
+      <td>48.57</td>
+      <td>92.54</td>
+      <td>39.32</td>
+      <td>61.42</td>
+      <td>5.08</td>
+      <td>-39.54</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>-38.88</td>
+      <td>-33.83</td>
+      <td>-58.54</td>
+      <td>-40.09</td>
+      <td>-79.31</td>
+      <td>-72.81</td>
+      <td>-86.55</td>
+      <td>-85.33</td>
+      <td>-83.97</td>
+      <td>...</td>
+      <td>-3.28</td>
+      <td>-32.21</td>
+      <td>-32.21</td>
+      <td>-24.89</td>
+      <td>-4.86</td>
+      <td>0.76</td>
+      <td>-11.70</td>
+      <td>6.46</td>
+      <td>16.00</td>
+      <td>19.93</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>532.64</td>
+      <td>535.92</td>
+      <td>513.73</td>
+      <td>496.92</td>
+      <td>456.45</td>
+      <td>466.00</td>
+      <td>464.50</td>
+      <td>486.39</td>
+      <td>436.56</td>
+      <td>...</td>
+      <td>-71.69</td>
+      <td>13.31</td>
+      <td>13.31</td>
+      <td>-29.89</td>
+      <td>-20.88</td>
+      <td>5.06</td>
+      <td>-11.80</td>
+      <td>-28.91</td>
+      <td>-70.02</td>
+      <td>-96.67</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>326.52</td>
+      <td>347.39</td>
+      <td>302.35</td>
+      <td>298.13</td>
+      <td>317.74</td>
+      <td>312.70</td>
+      <td>322.33</td>
+      <td>311.31</td>
+      <td>312.42</td>
+      <td>...</td>
+      <td>5.71</td>
+      <td>-3.73</td>
+      <td>-3.73</td>
+      <td>30.05</td>
+      <td>20.03</td>
+      <td>-12.67</td>
+      <td>-8.77</td>
+      <td>-17.31</td>
+      <td>-17.35</td>
+      <td>13.98</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>-1107.21</td>
+      <td>-1112.59</td>
+      <td>-1118.95</td>
+      <td>-1095.10</td>
+      <td>-1057.55</td>
+      <td>-1034.48</td>
+      <td>-998.34</td>
+      <td>-1022.71</td>
+      <td>-989.57</td>
+      <td>...</td>
+      <td>-594.37</td>
+      <td>-401.66</td>
+      <td>-401.66</td>
+      <td>-357.24</td>
+      <td>-443.76</td>
+      <td>-438.54</td>
+      <td>-399.71</td>
+      <td>-384.65</td>
+      <td>-411.79</td>
+      <td>-510.54</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1</td>
+      <td>211.10</td>
+      <td>163.57</td>
+      <td>179.16</td>
+      <td>187.82</td>
+      <td>188.46</td>
+      <td>168.13</td>
+      <td>203.46</td>
+      <td>178.65</td>
+      <td>166.49</td>
+      <td>...</td>
+      <td>-98.45</td>
+      <td>30.34</td>
+      <td>30.34</td>
+      <td>29.62</td>
+      <td>28.80</td>
+      <td>19.27</td>
+      <td>-43.90</td>
+      <td>-41.63</td>
+      <td>-52.90</td>
+      <td>-16.16</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>1</td>
+      <td>9.34</td>
+      <td>49.96</td>
+      <td>33.30</td>
+      <td>9.63</td>
+      <td>37.64</td>
+      <td>20.85</td>
+      <td>4.54</td>
+      <td>22.42</td>
+      <td>10.11</td>
+      <td>...</td>
+      <td>-58.56</td>
+      <td>9.93</td>
+      <td>9.93</td>
+      <td>23.50</td>
+      <td>5.28</td>
+      <td>-0.44</td>
+      <td>10.90</td>
+      <td>-11.77</td>
+      <td>-9.25</td>
+      <td>-36.69</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>1</td>
+      <td>238.77</td>
+      <td>262.16</td>
+      <td>277.80</td>
+      <td>190.16</td>
+      <td>180.98</td>
+      <td>123.27</td>
+      <td>103.95</td>
+      <td>50.70</td>
+      <td>59.91</td>
+      <td>...</td>
+      <td>-72.48</td>
+      <td>31.77</td>
+      <td>31.77</td>
+      <td>53.48</td>
+      <td>27.88</td>
+      <td>95.30</td>
+      <td>48.86</td>
+      <td>-10.62</td>
+      <td>-112.02</td>
+      <td>-229.92</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1</td>
+      <td>-103.54</td>
+      <td>-118.97</td>
+      <td>-108.93</td>
+      <td>-72.25</td>
+      <td>-61.46</td>
+      <td>-50.16</td>
+      <td>-20.61</td>
+      <td>-12.44</td>
+      <td>1.48</td>
+      <td>...</td>
+      <td>43.92</td>
+      <td>7.24</td>
+      <td>7.24</td>
+      <td>-7.45</td>
+      <td>-18.82</td>
+      <td>4.53</td>
+      <td>21.95</td>
+      <td>26.94</td>
+      <td>34.08</td>
+      <td>44.65</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1</td>
+      <td>-265.91</td>
+      <td>-318.59</td>
+      <td>-335.66</td>
+      <td>-450.47</td>
+      <td>-453.09</td>
+      <td>-561.47</td>
+      <td>-606.03</td>
+      <td>-712.72</td>
+      <td>-685.97</td>
+      <td>...</td>
+      <td>3671.03</td>
+      <td>2249.28</td>
+      <td>2249.28</td>
+      <td>2437.78</td>
+      <td>2584.22</td>
+      <td>3162.53</td>
+      <td>3398.28</td>
+      <td>3648.34</td>
+      <td>3671.97</td>
+      <td>3781.91</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 3198 columns</p>
+</div>
+</div>
+</div>
+</section>
+<section id="goals" class="level2">
+<h2 class="anchored" data-anchor-id="goals">Goals</h2>
+<p>Within this project, I will be creating a <strong>Convolutional Neural Network</strong> in order to classify and predict whether a star has an orbiting exoplanet or not. This project presents some challenges I have yet to face in my data science career:</p>
+<ul>
+<li><p>working with ‘time series’ data</p></li>
+<li><p>working with Convolutional Neural Networks</p></li>
+<li><p>working with data that likely requires intense preprocessing</p></li>
+<li><p>working with highly imbalanced data</p></li>
+<li><p>working with such a high volume of data</p></li>
+</ul>
+<section id="convolutional-neural-networks" class="level3">
+<h3 class="anchored" data-anchor-id="convolutional-neural-networks">Convolutional Neural Networks</h3>
+<p>Convolutional neural networks (CNNs) are a type of neural network that are particularly well-suited for image and signal processing tasks. Unlike traditional neural networks, which are fully connected and treat input data as a flat vector, CNNs operate on multidimensional input data such as images or time-series data.</p>
+<p>CNNs use a series of filters (also known as kernels) that slide over the input data, applying convolution operations to each patch of the input. These filters learn to recognize local patterns in the input data, such as edges, corners, and other features. The outputs of the filters are then pooled, which reduces the dimensionality of the output and helps to extract higher-level features from the input data.</p>
+</section>
+</section>
+<section id="understanding-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-the-data">Understanding the Data</h2>
+<p>We can look at flux values over time for both stars with and without confirmed exoplanets. Here is the flux chart for a star with a confirmed exoplanet:</p>
+<div class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-5-output-1.png" width="613" height="439"></p>
+</div>
+</div>
+<p>Here is the flux chart for a star with no confirmed exoplanet:</p>
+<div class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-6-output-1.png" width="604" height="439"></p>
+</div>
+</div>
+<p>As you can see, the dip in the first graph represents the transit that can be seen and the point in time in which a planet passes between the star and the Kepler telescope.</p>
+<p>To understand our data better, we look at multiple stars with confirmed exoplanets:</p>
+<div class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-7-output-1.png" width="613" height="453"></p>
+</div>
+</div>
+</section>
+<section id="preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="preprocessing">Preprocessing</h2>
+<section id="normalization" class="level3">
+<h3 class="anchored" data-anchor-id="normalization">Normalization</h3>
+<p>When working with light data, we likely need to normalize and standardize our data. In the above graphic, it is seen that we have clean data, but it is not normalized. Checking the distribution of our data to see what kind of normalization to do:</p>
+<div class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-8-output-1.png" width="683" height="491"></p>
+</div>
+</div>
+<p>The data follows a Gaussian distribution</p>
+<ul>
+<li><p>First, I normalized the data by scaling vectors to unit norm.</p></li>
+<li><p>Then, I applied a Gaussian filter to match the distributions seen in the histogram above.</p></li>
+<li><p>Lastly, I standardized the data by scaling to unit variance.</p></li>
+</ul>
+</section>
+<section id="principal-component-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="principal-component-analysis">Principal Component Analysis</h3>
+<p>Because there were so many features (3197 flux value columns), principal component analysis was chosen to reduce the dimensionality of our dataset. The number of principal compnents ranged between 5-40 depending on the model, which I will touch on later. For the fully pre-processed model, there were 8 principal components to explained 90% of the variance:</p>
+<div class="cell" data-execution_count="9">
+<div class="cell-output cell-output-stdout">
+<pre><code>k = 8</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="140">
+<pre><code>Text(0, 0.5, 'Variance')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-11-output-2.png" width="589" height="442"></p>
+</div>
+</div>
+<p>The data was also highly imbalanced:</p>
+<div class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-13-output-1.png" width="601" height="442"></p>
+</div>
+</div>
+<p>Using Synthetic Minority Over-sampling Technique (SMOTE), I was able to gain resampled and more balanced augmented data:</p>
+<div class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-15-output-1.png" width="602" height="442"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="model-creation-and-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="model-creation-and-evaluation">Model Creation and Evaluation</h2>
+<section id="structure-of-cnn" class="level3">
+<h3 class="anchored" data-anchor-id="structure-of-cnn">Structure of CNN</h3>
+<p>Here is the structure for the Convolutional Neural Network used in this model:</p>
+<ol type="1">
+<li><p>1D Convolutional Layer: 16 filters, 3 x 3 kernel, ReLU activation, input shape = (# of timesteps (columns), 1)</p></li>
+<li><p>1D Max Pooling Layer: size = 2, strides = 2</p></li>
+<li><p>Batch Normalization</p></li>
+<li><p>1D Convolutional Layer: 32 filters, 3 x 3 kernel, ReLU activation</p></li>
+<li><p>1D Max Pooling Layer: size = 2, strides = 2</p></li>
+<li><p>Batch Normalization</p></li>
+<li><p>1D Convolutional Layer: 64 filters, 3 x 3 kernel, ReLU activation, input shape = (# of timesteps (columns), 1)</p></li>
+<li><p>1D Max Pooling Layer: size = 2, strides = 2</p></li>
+<li><p>Batch Normalization</p></li>
+<li><p>1D Convolutional Layer: 128 filters, 3 x 3 kernel, ReLU activation, input shape = (# of timesteps (columns), 1)</p></li>
+<li><p>1D Max Pooling Layer: size = 2, strides = 2</p></li>
+<li><p>Batch Normalization</p></li>
+<li><p>Flatten to 1D layer</p></li>
+<li><p>Dropout: 0.5</p></li>
+<li><p>Dense: 64 units, ReLU activation</p></li>
+<li><p>Dropout: 0.25</p></li>
+<li><p>Dense: 64 units, ReLU activation</p></li>
+<li><p>Dense: 1 unit, Sigmoid activation</p></li>
+</ol>
+<p>Model hyperparamaters were batch size = 64, and epochs = 50, optimizer = Adam, and loss = binary_crossentropy.</p>
+<p>To evaluate model performance, first looking towards our loss and accuracy charted over epochs:</p>
+<div class="cell" data-execution_count="19">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-20-output-1.png" width="571" height="424"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-20-output-2.png" width="579" height="424"></p>
+</div>
+</div>
+<p>Then looking at a confusion matrix to show our prediction performance:</p>
+<div class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-23-output-1.png" width="633" height="607"></p>
+</div>
+</div>
+<p>Frustratingly, no correct predictions for finding an exoplanet. Looking at other performance metrics (ultimately redundant given model performance):</p>
+<div class="cell" data-execution_count="23">
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 0.9945
+Precision: 0.0000
+Recall: 0.0000
+F1 Score: 0.0000</code></pre>
+</div>
+</div>
+<p>To check if this was related to the neural network specifically, I ran a support vector machine classifier to weigh its performance against the CNN:</p>
+<div class="cell" data-execution_count="24">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-25-output-1.png" width="633" height="599"></p>
+</div>
+</div>
+<p>The SVM actually classified one star as having a planet correctly. This means I can really look at the other performance metrics:</p>
+<div class="cell" data-execution_count="25">
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 0.9874
+Precision: 0.0909
+Recall: 0.1429
+F1 Score: 0.1111</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="cell-output cell-output-display">
+<p><img src="presentation_files/figure-html/cell-27-output-1.png" width="599" height="442"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusions-looking-forward" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions-looking-forward">Conclusions / Looking Forward</h2>
+<p>It is important to note that after discovering that the CNN was unable to accurately find an orbiting exoplanet, I retrained the CNN model with multiple variations of the data preprocessed differently. This included:</p>
+<ul>
+<li><p>different distributions</p></li>
+<li><p>different normalization techniques</p></li>
+<li><p>no normalization (just the batch normalization within the model)</p></li>
+<li><p>no standardization</p></li>
+<li><p>no Principal Component Analysis</p></li>
+</ul>
+<p>For the sake of redundancy, performance metrics / visualizations from the re-trained models have not been included in this presentation as they show the same result: every model created still resulted in a lack of an accurate exoplanet prediction.</p>
+<p>Ultimately, two different classifications attempts technically proved successful: both had high accuracy measurements. If I was to continue my analysis further, some things I would focus on:</p>
+<ul>
+<li><p>cross-validation for the neural network hyperparameters</p></li>
+<li><p>using CNNs with different architectures</p></li>
+<li><p>different preprocessing techniques</p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
